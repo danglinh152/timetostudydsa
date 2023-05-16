@@ -1,136 +1,163 @@
-#include<iostream>
+﻿#include<iostream>
 using namespace std;
 
-struct Node {
+struct TNode {
 	int data;
-	Node* next;
+	TNode* pleft;
+	TNode* pright;
 };
 
-Node* MakeNode(int x) {
-	Node* NewNode = new Node;
-	NewNode->data = x;
-	NewNode->next = NULL;
-	return NewNode;
+void CreateTNode(TNode* &t) {
+	t = NULL;
 }
 
-int Count(Node* head) {
-	int Count = 0;
-	while (head != NULL) {
-		Count++;
-		head = head->next;
+
+void AddNode(TNode* &t, int x) {
+	if (t == NULL) {
+		TNode* NewTNode = new TNode;
+		NewTNode->data = x;
+		NewTNode->pleft = NULL;
+		NewTNode->pright = NULL;
+		t = NewTNode;
 	}
-	return Count;
+	else {
+		if (x < t->data) {
+			AddNode(t->pleft, x);
+		}
+		else if (x > t->data) {
+			AddNode(t->pright, x);
+		}
+	}
 }
 
-void Xuat(Node* head) {
-	while (head != NULL) {
-		cout << head->data << " ";
-		head = head->next;
+void NLR(TNode* t) {
+	if (t != NULL) {
+		cout << t->data << " ";
+		NLR(t->pleft);
+		NLR(t->pright);
 	}
-	cout << endl;
+	
 }
 
-void Add_first(Node*& head, int x) {
-	Node* NewNode = MakeNode(x);
-	NewNode->next = head;
-	head = NewNode;
+
+
+
+void NRL(TNode* t) {
+	if (t != NULL) {
+		cout << t->data << " ";
+		NRL(t->pright);
+		NRL(t->pleft);
+	}
+	
 }
 
-void Add_back(Node*& head, int x) {
-	Node* tmp = head;
-	Node* NewNode = MakeNode(x);
-	if (tmp == NULL) {
-		head = NewNode;
-		return;
+bool soNguyenTo(int soA) // hàm bool trả về true/false
+{
+	if (soA < 2) // Nếu số A nhỏ hơn 2
+	{
+		return false;// trả về false
 	}
-	while (tmp->next != NULL) {
-		tmp = tmp->next;
+	else if (soA > 2)// Nếu số A lớn hơn 2
+	{
+		if (soA % 2 == 0)  // Xét xem A có chia hết cho 2 không?
+		{
+			return false;// Nếu chia hết, return false.
+		}
+		for (int i = 3; i < sqrt((float)soA); i += 2)  // xét từ 3 đến căn bậc 2 của số A
+		{
+			if (soA % i == 0)  // nếu A chia hết cho một số nào đó trong đoạn này
+			{
+				return false;// trả về kết quả sai
+			}
+		}
 	}
-	tmp->next = NewNode;
+	return true;// sau tất cả các chỗ trên, nó mà không sai thì cuối cùng nó đúng :3
 }
 
-void Insert(Node*& head, int x) {
-	Node* tmp = head;
-	Node* NewNode = MakeNode(x);
-	int k; cout << "Nhap vi tri k can chen: "; cin >> k;
-	if (k<1 or k > Count(head) + 1) {
-		cout << "Vi tri chen khong hop le!" << endl;
-		return;
+void xuatsnt(TNode* t) {
+	if (t != NULL) {
+		if (soNguyenTo(t->data)) {
+			cout << t->data << " ";
+		}
+		xuatsnt(t->pleft);
+		xuatsnt(t->pright);
 	}
-	if (k == 1) {
-		Add_first(head, x);
-		return;
-	}
-	for (int i = 1; i <= k - 2; i++) {
-		tmp = tmp->next;
-	}
-	NewNode->next = tmp->next;
-	tmp->next = NewNode;
 }
 
-void _delete_first(Node*& head) {
-	Node* tmp = head;
-	if (tmp == NULL) {
-		cout << "Khong co node nao ca!" << endl;
-		return;
+void LNR(TNode* t) {
+	if (t != NULL) {
+		LNR(t->pleft);
+		cout << t->data << " ";
+		LNR(t->pright);
 	}
-	head = tmp->next;
-	delete tmp;
+
 }
 
-void _delete_back(Node*& head) {
-	Node* tmp = head;
-	if (tmp == NULL) {
-		cout << "Khong co node nao ca!" << endl;
-		return;
+
+
+
+void RNL(TNode* t) {
+	if (t != NULL) {
+		RNL(t->pright);
+		cout << t->data << " ";
+		RNL(t->pleft);
 	}
-	if (tmp->next == NULL) {
-		delete tmp;
-		return;
-	}
-	while (tmp->next->next != NULL) {
-		tmp = tmp->next;
-	}
-	Node* last = tmp->next;
-	tmp->next = NULL;
-	delete last;
+	
 }
 
-void _delete_anywhere(Node*& head) {
-	int k; cout << "Nhap vi tri k can xoa: "; cin >> k;
-	if (k < 1 or k > Count(head)) {
-		cout << "Vi tri can xoa khong hop le!" << endl;
-		return;
+void LRN(TNode* t) {
+	if (t != NULL) {
+		LRN(t->pleft);
+		LRN(t->pright);
+		cout << t->data << " ";
 	}
-	if (k == 1) {
-		_delete_first(head);
-		return;
-	}
-	Node* tmp = head;
-	for (int i = 1; i <= k - 2; i++) {
-		tmp = tmp->next;
-	}
-	Node* vitrik = tmp->next;
-	tmp->next = vitrik->next;
-	delete vitrik;
+	
 }
+
+void RLN(TNode* t) {
+	if (t != NULL) {
+		RLN(t->pright);
+		RLN(t->pleft);
+		cout << t->data << " ";
+	}
+
+}
+
+
 
 int main() {
-	Node* head = NULL;
-	for (int i = 9; i >= 1; i--) {
-		Add_first(head, i);
+	TNode* t;
+	CreateTNode(t);
+	while (true) {
+		cout << endl << "=======================MENU=======================" << endl;
+		cout << "1. Nhap" << endl;
+		cout << "2. Xuat cac so nguyen to" << endl;
+		cout << "3. LNR" << endl;
+		cout << "0. Thoat" << endl;
+		cout << "==================================================" << endl;
+		int selection;
+		cout << "Lua chon: ";
+		cin >> selection;
+		system("cls");
+		if (selection < 0 or selection > 3) {
+			cout << "Nhap sai. Vui long nhap lai!" << endl;
+		}
+		else if (selection == 1) {
+			int x;
+			cout << "Nhap: ";
+			cin >> x;
+			AddNode(t, x);
+		}
+		else if (selection == 2) {
+			xuatsnt(t);
+		}
+		else if (selection == 3) {
+			LNR(t);
+		}
+		else {
+			cout << "Dang thoat...." << endl; break;
+		}
+
 	}
-	for (int i = 10; i <= 20; i++) {
-		Add_back(head, i);
-	}
-	Xuat(head);
-	Insert(head, 0);
-	Xuat(head);
-	_delete_first(head);
-	Xuat(head);
-	_delete_back(head);
-	Xuat(head);
-	_delete_anywhere(head);
-	Xuat(head);
 	
 }
